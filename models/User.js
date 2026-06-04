@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin', 'vendor'],
+      enum: ['user', 'admin', 'vendor', 'pharmacy_vendor', 'lab_vendor', 'doctor_vendor'],
       default: 'user',
     },
     refreshToken: {
@@ -40,6 +40,18 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    resetOTP: {
+      type: String,
+    },
+    resetOTPExpiry: {
+      type: Date,
+    },
+    phoneOTP: {
+      type: String,
+    },
+    phoneOTPExpiry: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -49,7 +61,7 @@ const userSchema = new mongoose.Schema(
 // Hash password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
-    next();
+    return next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

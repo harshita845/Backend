@@ -1,4 +1,10 @@
 require('dotenv').config();
+const dns = require('dns');
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {
+  console.error('Failed to set custom DNS servers:', e.message);
+}
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -78,6 +84,44 @@ const seedUsers = async () => {
       console.log('- Vendor: Phone 8888888888, Password: vendor123');
       console.log('- User: Phone 7777777777, Password: user123');
     }
+
+    // Seed specific Multi-Vendor role demo accounts if they do not exist
+    const pharmacyExists = await User.findOne({ email: 'pharmacy@emediclub.com' });
+    if (!pharmacyExists) {
+      await User.create({
+        name: 'City Pharmacy',
+        phone: '8888888889',
+        email: 'pharmacy@emediclub.com',
+        password: 'Pharmacy@123',
+        role: 'pharmacy_vendor',
+      });
+      console.log('Seeded City Pharmacy (pharmacy@emediclub.com / Pharmacy@123)');
+    }
+
+    const labExists = await User.findOne({ email: 'lab@emediclub.com' });
+    if (!labExists) {
+      await User.create({
+        name: 'Diagnostics Lab',
+        phone: '8888888890',
+        email: 'lab@emediclub.com',
+        password: 'Lab@123',
+        role: 'lab_vendor',
+      });
+      console.log('Seeded Diagnostics Lab (lab@emediclub.com / Lab@123)');
+    }
+
+    const doctorExists = await User.findOne({ email: 'doctor@emediclub.com' });
+    if (!doctorExists) {
+      await User.create({
+        name: 'Dr. Ramesh (General Physician)',
+        phone: '8888888891',
+        email: 'doctor@emediclub.com',
+        password: 'Doctor@123',
+        role: 'doctor_vendor',
+      });
+      console.log('Seeded Dr. Ramesh (doctor@emediclub.com / Doctor@123)');
+    }
+
   } catch (err) {
     console.error(`Seeding error: ${err.message}`);
   }

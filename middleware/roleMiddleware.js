@@ -24,4 +24,8 @@ module.exports = {
   adminOnly: authorize('admin'),
   vendorOnly: authorize('vendor'),
   userOnly: authorize('user'),
+  pharmacyVendorOnly: authorize('pharmacy_vendor', 'vendor'),
+  labVendorOnly: authorize('lab_vendor'),
+  doctorVendorOnly: authorize('doctor_vendor'),
+  vendorAny: authorize('vendor', 'pharmacy_vendor', 'lab_vendor', 'doctor_vendor'),
 };
